@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.metoo.nspm.core.mapper.AuthCodeMapper">
+
+    <resultMap id="Base_Result_Map" type="com.metoo.nspm.entity.nspm.AuthCode">
+        <result property="userId" column="userId"></result>
+        <result property="code" column="code"></result>
+        <result property="token" column="token"></result>
+        <result property="refresh_token" column="refresh_token"></result>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        code, userId, token, refresh_token
+    </sql>
+
+    <select id="selectObjByCode" parameterType="java.lang.String" resultMap="Base_Result_Map">
+        select *
+        from metoo_auth_token
+        where code = #{code}
+    </select>
+
+    <select id="selectObjByToken" parameterType="java.lang.String" resultMap="Base_Result_Map">
+        select *
+        from metoo_auth_token
+        where token = #{token}
+    </select>
+
+    <insert id="save" parameterType="com.metoo.nspm.entity.nspm.AuthCode">
+       INSERT INTO metoo_auth_token
+       <trim prefix="(" suffixOverrides="," suffix=")">
+           <if test="addTime != null">
+               addTime,
+           </if>
+           <if test="userId != null">
+              userId,
+           </if>
+           <if test="code != null and code != ''">
+                code,
+           </if>
+           <if test="token != null and token != ''">
+               token,
+           </if>
+       </trim>
+        <trim prefix="VALUE(" suffixOverrides="," suffix=")">
+            <if test="addTime != null">
+                #{addTime},
+            </if>
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="token != null and token != ''">
+                #{token},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.metoo.nspm.entity.nspm.AuthCode">
+        INSERT INTO metoo_auth_token
+        <set>
+            <if test="addTime != null">
+                addTime = #{addTime},
+            </if>
+            <if test="userId != null and userId != ''">
+                userId = #{userId},
+            </if>
+            <if test="code != null and code != ''">
+                code = #{code},
+            </if>
+            <if test="token != null and token != ''">
+                token = #{token},
+            </if>
+            <if test="refresh_token != null and refresh_token != ''">
+                refresh_token = #{refresh_token},
+            </if>
+        </set>
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        DELETE FROM metoo_auth_token WHERE id = #{id}
+    </delete>
+</mapper>

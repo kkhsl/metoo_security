@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.metoo.nspm.core.mapper.UserMapper">
+
+    <resultMap id="Base_User_Map" type="com.metoo.nspm.entity.nspm.SysUser">
+        <id column="mu_id" property="id"/>
+        <result column="mu_addTime" property="addTime"></result>
+        <result column="mu_username" property="username"></result>
+        <result column="mu_password" property="password"></result>
+        <result column="mu_sex" property="sex"></result>
+        <result column="mu_age" property="age"></result>
+        <!--角色信息-->
+        <collection property="roles" javaType="list" ofType="com.metoo.nspm.entity.nspm.Role">
+            <id column="mr_id" property="id"/>
+            <result column="mr_name" property="name"></result>
+            <result column="mr_roleCode" property="roleCode"></result>
+            <result column="mr_type" property="type"></result>
+        </collection>
+    </resultMap>
+
+    <resultMap id="Base_Update_Map" type="com.metoo.nspm.core.vo.UserVo">
+        <id column="mu_id" property="id"></id>
+        <result column="mu_addTime" property="addTime"></result>
+        <result column="mu_username" property="username"></result>
+        <result column="mu_password" property="password"></result>
+        <result column="mu_age" property="age"></result>
+        <result column="mu_sex" property="sex"></result>
+        <result column="mu_userRole" property="type"></result>
+        <result column="mu_email" property="email"></result>
+        <result column="mu_mobile" property="mobile"></result>
+        <result column="mu_note" property="note"></result>
+        <result column="mu_groupName" property="groupName"></result>
+        <result column="mu_groupId" property="groupId"></result>
+       <collection property="roleIds" column="mr_id" ofType="java.lang.Long">
+           <id column="mr_id" property="roleIds"></id>
+       </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, addTime, deleteStatus, username, password, sex,
+        age, userRole, email, mobile, note, groupId, groupName, groupLevel,type
+    </sql>
+
+    <sql id="Base_Update_Info">
+        id, username, sex,
+        age, userRole, email, mobile, note, groupId, groupName, groupLevel
+    </sql>
+
+    <select id="selectByName" parameterType="String" resultType="com.metoo.nspm.entity.nspm.SysUser">
+        SELECT
+            id,
+            username,
+            password,
+            salt,
+            userRole,
+            sex,
+            age
+        FROM
+            metoo_user
+        WHERE
+         username=#{username}
+        AND
+        deleteStatus >= 0
+    </select>
+
+    <select id="selectObjById" resultType="com.metoo.nspm.entity.nspm.SysUser">
+        SELECT <include refid="Base_Column_List" />
+        FROM metoo_user
+        WHERE id=#{id, jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByMap" parameterType="java.util.Map" resultType="com.metoo.nspm.entity.nspm.SysUser">
+        SELECT
+            id,
+            username,
+            password,
+            salt,
+            userRole,
+            sex,
+            age
+        FROM
+            metoo_user
+        WHERE
+         username=#{username}
+        AND
+        deleteStatus >= 0
+    </select>
+
+    <select id="selectObjByConditionQuery" parameterType="com.metoo.nspm.core.dto.UserDto" resultType="com.metoo.nspm.entity.nspm.SysUser">
+        SELECT
+            id,
+            username,
+            password,
+            salt,
+            userRole,
+            sex,
+            age
+        FROM
+            metoo_user
+        <where>
+            <if test="username != null and username != ''">
+                AND username=#{username}
+            </if>
+            <if test="username == null or username != null">
+                AND deleteStatus >= 0
+            </if>
+        </where>
+
+    </select>
+    
+</mapper>
